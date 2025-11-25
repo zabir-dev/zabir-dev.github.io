@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FABRIK | Industrial Design Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0a0a0a;
+            --white: #f5f5f5;
+            --gray-dark: #1a1a1a;
+            --gray-mid: #333;
+            --gray-light: #666;
+            --border-thick: 4px;
+            --border-thin: 2px;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        body:not(.touch-device) {
+            cursor: none;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--white);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.scale {
+            transform: scale(3);
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--black);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preloader-text {
+            font-size: clamp(3rem, 15vw, 12rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            overflow: hidden;
+        }
+
+        .preloader-text span {
+            display: inline-block;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-left {
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: var(--border-thick) solid var(--white);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: clamp(4rem, 18vw, 20rem);
+            font-weight: 700;
+            letter-spacing: -0.08em;
+            line-height: 0.85;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title span {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title span span {
+            display: inline-block;
+        }
+
+        .hero-right {
+            background: var(--gray-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Industrial Noise Animation */
+        .noise-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .noise {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.03) 2px,
+                rgba(255, 255, 255, 0.03) 4px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.03) 2px,
+                rgba(255, 255, 255, 0.03) 4px
+            );
+            animation: noise 0.3s steps(3) infinite;
+        }
+
+        @keyframes noise {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5%, 5%); }
+            50% { transform: translate(5%, -5%); }
+            75% { transform: translate(-5%, -5%); }
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .industrial-shapes {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+        }
+
+        .shape {
+            position: absolute;
+            border: var(--border-thick) solid var(--white);
+            opacity: 0.3;
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            right: 15%;
+            border-radius: 50%;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 300px;
+            top: 30%;
+            right: 30%;
+        }
+
+        .hero-subtitle {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: var(--white);
+            transform-origin: top;
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 8rem 4rem;
+            border-top: var(--border-thick) solid var(--white);
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            line-height: 1;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            color: var(--gray-light);
+        }
+
+        /* Product Grid */
+        .products {
+            background: var(--black);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border: var(--border-thick) solid var(--white);
+        }
+
+        .product-item {
+            aspect-ratio: 1;
+            border: var(--border-thin) solid var(--white);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .product-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gray-dark);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .product-item:nth-child(odd) .product-bg {
+            background: var(--gray-mid);
+        }
+
+        .product-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            z-index: 2;
+        }
+
+        .product-number {
+            font-size: 0.875rem;
+            letter-spacing: 0.2em;
+            opacity: 0.5;
+        }
+
+        .product-title {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            transform: skewX(-10deg);
+            z-index: 1;
+        }
+
+        .product-item:hover .product-overlay {
+            animation: diagonalWipe 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes diagonalWipe {
+            0% { left: -120%; }
+            50% { left: 0%; }
+            100% { left: 120%; }
+        }
+
+        /* Process Timeline */
+        .process {
+            background: var(--gray-dark);
+            overflow: hidden;
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            overflow: visible;
+        }
+
+        .timeline-container {
+            display: flex;
+            gap: 0;
+            width: fit-content;
+        }
+
+        .timeline-item {
+            width: 400px;
+            min-height: 500px;
+            border: var(--border-thin) solid var(--white);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .timeline-number {
+            font-size: 6rem;
+            font-weight: 700;
+            opacity: 0.1;
+            line-height: 1;
+        }
+
+        .timeline-icon {
+            width: 80px;
+            height: 80px;
+            border: var(--border-thick) solid var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .timeline-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--gray-light);
+        }
+
+        .timeline-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--white);
+        }
+
+        /* Case Studies */
+        .case-studies {
+            background: var(--black);
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .case-card {
+            border: var(--border-thick) solid var(--white);
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .case-card-inner {
+            padding: 3rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 2;
+        }
+
+        .case-tag {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            color: var(--gray-light);
+        }
+
+        .case-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .case-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--gray-light);
+            max-width: 400px;
+        }
+
+        .case-expand {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border: var(--border-thin) solid var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .case-card:hover .case-expand {
+            transform: rotate(90deg);
+        }
+
+        .case-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gray-dark);
+            z-index: 1;
+        }
+
+        .case-card:nth-child(even) .case-bg {
+            background: var(--gray-mid);
+        }
+
+        /* Expanded Case Study Modal */
+        .case-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--black);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+        }
+
+        .case-modal.active {
+            display: flex;
+        }
+
+        .case-modal-content {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .case-modal-left {
+            background: var(--gray-dark);
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .case-modal-right {
+            background: var(--gray-mid);
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border: var(--border-thin) solid var(--white);
+            background: transparent;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .case-modal-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            margin-bottom: 2rem;
+        }
+
+        .case-modal-description {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: var(--gray-light);
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--white);
+            color: var(--black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact .section-title {
+            color: var(--black);
+        }
+
+        .contact-text {
+            font-size: clamp(2rem, 6vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin-bottom: 4rem;
+            max-width: 1200px;
+        }
+
+        .contact-text span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-text span:hover {
+            transform: scale(1.1);
+        }
+
+        .contact-link {
+            font-size: clamp(3rem, 12vw, 10rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            text-decoration: none;
+            color: var(--black);
+            border-bottom: var(--border-thick) solid var(--black);
+            display: inline-block;
+            transition: letter-spacing 0.3s ease;
+        }
+
+        .contact-link:hover {
+            letter-spacing: 0.05em;
+        }
+
+        .contact-details {
+            display: flex;
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .contact-item {
+            border-left: var(--border-thin) solid var(--black);
+            padding-left: 2rem;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            color: var(--gray-light);
+        }
+
+        .contact-value {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 4rem;
+            border-top: var(--border-thick) solid var(--white);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--gray-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-left {
+                border-right: none;
+                border-bottom: var(--border-thick) solid var(--white);
+                height: 60vh;
+            }
+
+            .hero-right {
+                height: 40vh;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 4rem 2rem;
+            }
+
+            .timeline-item {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .case-modal-content {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-details {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-text">
+            <span>F</span><span>A</span><span>B</span><span>R</span><span>I</span><span>K</span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-left">
+            <h1 class="hero-title">
+                <span><span>FAB</span></span>
+                <span><span>RIK</span></span>
+            </h1>
+        </div>
+        <div class="hero-right">
+            <div class="noise-container">
+                <div class="noise"></div>
+            </div>
+            <div class="grid-overlay"></div>
+            <div class="industrial-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+            <span class="hero-subtitle">Industrial Design Studio</span>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Products Section -->
+        <section class="products" id="products">
+            <div class="section-header">
+                <h2 class="section-title">Products</h2>
+                <p class="section-subtitle">Industrial Grade Solutions</p>
+            </div>
+            <div class="product-grid">
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">001</span>
+                        <h3 class="product-title">Modular Systems</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">002</span>
+                        <h3 class="product-title">Steel Framework</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">003</span>
+                        <h3 class="product-title">Raw Materials</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">004</span>
+                        <h3 class="product-title">Precision Tools</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">005</span>
+                        <h3 class="product-title">Industrial Lighting</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">006</span>
+                        <h3 class="product-title">Metal Works</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">007</span>
+                        <h3 class="product-title">Concrete Forms</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">008</span>
+                        <h3 class="product-title">Cable Systems</h3>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <div class="product-bg"></div>
+                    <div class="product-overlay"></div>
+                    <div class="product-content">
+                        <span class="product-number">009</span>
+                        <h3 class="product-title">Custom Design</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section class="process" id="process">
+            <div class="section-header">
+                <h2 class="section-title">Process</h2>
+                <p class="section-subtitle">From Concept to Creation</p>
+            </div>
+            <div class="timeline-wrapper">
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <span class="timeline-number">01</span>
+                        <div class="timeline-icon">◇</div>
+                        <h3 class="timeline-title">Discovery</h3>
+                        <p class="timeline-description">Understanding your vision, requirements, and constraints. We analyze every detail to build the foundation.</p>
+                        <div class="timeline-progress"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-number">02</span>
+                        <div class="timeline-icon">△</div>
+                        <h3 class="timeline-title">Concept</h3>
+                        <p class="timeline-description">Raw ideas take shape through sketches, prototypes, and iterative exploration of possibilities.</p>
+                        <div class="timeline-progress"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-number">03</span>
+                        <div class="timeline-icon">□</div>
+                        <h3 class="timeline-title">Design</h3>
+                        <p class="timeline-description">Precision engineering meets aesthetics. Every line, every curve serves a purpose.</p>
+                        <div class="timeline-progress"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-number">04</span>
+                        <div class="timeline-icon">○</div>
+                        <h3 class="timeline-title">Prototype</h3>
+                        <p class="timeline-description">Physical manifestation of concepts. Testing, refining, and perfecting through hands-on iteration.</p>
+                        <div class="timeline-progress"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-number">05</span>
+                        <div class="timeline-icon">◈</div>
+                        <h3 class="timeline-title">Production</h3>
+                        <p class="timeline-description">Industrial-grade manufacturing with uncompromising quality standards and attention to detail.</p>
+                        <div class="timeline-progress"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-number">06</span>
+                        <div class="timeline-icon">◉</div>
+                        <h3 class="timeline-title">Delivery</h3>
+                        <p class="timeline-description">The final product, ready to integrate into your world. Support continues beyond delivery.</p>
+                        <div class="timeline-progress"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Studies Section -->
+        <section class="case-studies" id="work">
+            <div class="section-header">
+                <h2 class="section-title">Work</h2>
+                <p class="section-subtitle">Selected Case Studies</p>
+            </div>
+            <div class="case-grid">
+                <div class="case-card" data-case="1">
+                    <div class="case-bg"></div>
+                    <div class="case-card-inner">
+                        <span class="case-tag">Architecture</span>
+                        <h3 class="case-title">Berlin Factory Conversion</h3>
+                        <p class="case-description">Transforming industrial heritage into modern living spaces while preserving raw authenticity.</p>
+                    </div>
+                    <div class="case-expand">+</div>
+                </div>
+                <div class="case-card" data-case="2">
+                    <div class="case-bg"></div>
+                    <div class="case-card-inner">
+                        <span class="case-tag">Product</span>
+                        <h3 class="case-title">Industrial Furniture Line</h3>
+                        <p class="case-description">Steel and concrete furniture designed for longevity, functionality, and brutal beauty.</p>
+                    </div>
+                    <div class="case-expand">+</div>
+                </div>
+                <div class="case-card" data-case="3">
+                    <div class="case-bg"></div>
+                    <div class="case-card-inner">
+                        <span class="case-tag">Interior</span>
+                        <h3 class="case-title">Tokyo Retail Space</h3>
+                        <p class="case-description">Minimalist brutalism meets Japanese precision in a flagship retail environment.</p>
+                    </div>
+                    <div class="case-expand">+</div>
+                </div>
+                <div class="case-card" data-case="4">
+                    <div class="case-bg"></div>
+                    <div class="case-card-inner">
+                        <span class="case-tag">Installation</span>
+                        <h3 class="case-title">Light & Steel Exhibition</h3>
+                        <p class="case-description">An immersive installation exploring the interplay of industrial materials and natural light.</p>
+                    </div>
+                    <div class="case-expand">+</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact" id="contact">
+            <div class="section-header">
+                <h2 class="section-title">Contact</h2>
+            </div>
+            <p class="contact-text">
+                <span>Ready</span> <span>to</span> <span>build</span> <span>something</span> <span>bold?</span>
+                <br>
+                <span>Let's</span> <span>create</span> <span>the</span> <span>extraordinary.</span>
+            </p>
+            <a href="mailto:studio@fabrik.design" class="contact-link magnetic">studio@fabrik.design</a>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <p class="contact-label">Location</p>
+                    <p class="contact-value">Berlin, Germany</p>
+                </div>
+                <div class="contact-item">
+                    <p class="contact-label">Phone</p>
+                    <p class="contact-value">+49 30 1234 5678</p>
+                </div>
+                <div class="contact-item">
+                    <p class="contact-label">Social</p>
+                    <p class="contact-value">@fabrik.studio</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Case Study Modal -->
+    <div class="case-modal">
+        <div class="case-modal-content">
+            <div class="case-modal-left">
+                <span class="case-tag modal-tag">Architecture</span>
+                <h2 class="case-modal-title">Berlin Factory Conversion</h2>
+                <p class="case-modal-description">A masterful transformation of a 1920s industrial complex into contemporary living spaces. The project preserved original steel structures, exposed concrete walls, and industrial windows while introducing modern amenities and sustainable systems.</p>
+            </div>
+            <div class="case-modal-right">
+                <button class="case-modal-close">×</button>
+                <div class="grid-overlay"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">FABRIK</div>
+            <p class="footer-text">© 2024 Fabrik Industrial Design Studio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Touch device detection for accessibility
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            document.body.classList.add('touch-device');
+        }
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            gsap.to(cursorDot, {
+                x: mouseX - 3,
+                y: mouseY - 3,
+                duration: 0.1
+            });
+        });
+
+        // Smooth cursor follow
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Cursor scaling on interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .product-item, .case-card, .contact-text span');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('scale'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('scale'));
+        });
+
+        // Preloader Animation
+        const preloader = document.querySelector('.preloader');
+        const preloaderChars = document.querySelectorAll('.preloader-text span');
+
+        const preloaderTl = gsap.timeline();
+        preloaderTl
+            .from(preloaderChars, {
+                y: 100,
+                opacity: 0,
+                rotationX: -90,
+                stagger: 0.1,
+                duration: 0.8,
+                ease: 'back.out(1.7)'
+            })
+            .to(preloaderChars, {
+                y: -100,
+                opacity: 0,
+                stagger: 0.05,
+                duration: 0.5,
+                delay: 0.5
+            })
+            .to(preloader, {
+                yPercent: -100,
+                duration: 0.8,
+                ease: 'power4.inOut'
+            })
+            .set(preloader, { display: 'none' });
+
+        // Hero Title Animation
+        const heroTitleLines = document.querySelectorAll('.hero-title > span > span');
+        gsap.from(heroTitleLines, {
+            y: '100%',
+            duration: 1.2,
+            stagger: 0.2,
+            ease: 'power4.out',
+            delay: 2
+        });
+
+        // Industrial Shapes Animation
+        gsap.to('.shape-1', {
+            rotation: 360,
+            duration: 20,
+            repeat: -1,
+            ease: 'none'
+        });
+
+        gsap.to('.shape-2', {
+            scale: 1.2,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+
+        gsap.to('.shape-3', {
+            y: 50,
+            duration: 4,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+        });
+
+        // Scroll Indicator Animation
+        gsap.to('.scroll-line', {
+            scaleY: 0,
+            transformOrigin: 'bottom',
+            duration: 1.5,
+            repeat: -1,
+            ease: 'power2.inOut'
+        });
+
+        // Hero Split on Scroll
+        ScrollTrigger.create({
+            trigger: '.hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                gsap.to('.hero-left', {
+                    xPercent: -50 * progress,
+                    duration: 0
+                });
+                gsap.to('.hero-right', {
+                    xPercent: 50 * progress,
+                    duration: 0
+                });
+            }
+        });
+
+        // Section Title Reveals
+        document.querySelectorAll('.section-title').forEach(title => {
+            gsap.from(title, {
+                scrollTrigger: {
+                    trigger: title,
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                },
+                y: 100,
+                opacity: 0,
+                duration: 1,
+                ease: 'power4.out'
+            });
+        });
+
+        // Product Grid Animations
+        const productItems = document.querySelectorAll('.product-item');
+        productItems.forEach((item, index) => {
+            // Stagger reveal
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: 'top 90%',
+                    toggleActions: 'play none none reverse'
+                },
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.6,
+                delay: (index % 3) * 0.1,
+                ease: 'back.out(1.7)'
+            });
+
+            // Elastic hover effect
+            item.addEventListener('mouseenter', () => {
+                gsap.to(item, {
+                    scale: 1.05,
+                    duration: 0.4,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+                gsap.to(item.querySelector('.product-bg'), {
+                    scale: 1.1,
+                    duration: 0.4
+                });
+            });
+
+            item.addEventListener('mouseleave', () => {
+                gsap.to(item, {
+                    scale: 1,
+                    duration: 0.4,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+                gsap.to(item.querySelector('.product-bg'), {
+                    scale: 1,
+                    duration: 0.4
+                });
+            });
+
+            // Magnetic pull effect
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(item.querySelector('.product-content'), {
+                    x: x * 0.1,
+                    y: y * 0.1,
+                    duration: 0.3
+                });
+            });
+
+            item.addEventListener('mouseleave', () => {
+                gsap.to(item.querySelector('.product-content'), {
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.3)'
+                });
+            });
+        });
+
+        // Horizontal Timeline Scroll
+        const timelineWrapper = document.querySelector('.timeline-wrapper');
+        const timelineContainer = document.querySelector('.timeline-container');
+        
+        if (timelineWrapper && timelineContainer) {
+            const getScrollAmount = () => {
+                return -(timelineContainer.scrollWidth - window.innerWidth + 100);
+            };
+
+            gsap.to(timelineContainer, {
+                x: getScrollAmount,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.process',
+                    start: 'top top',
+                    end: () => `+=${timelineContainer.scrollWidth}`,
+                    scrub: 1,
+                    pin: true,
+                    anticipatePin: 1
+                }
+            });
+
+            // Timeline item animations
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const containerAnimation = gsap.to(timelineContainer, { x: getScrollAmount });
+            
+            timelineItems.forEach((item, index) => {
+                gsap.to(item.querySelector('.timeline-progress'), {
+                    width: '100%',
+                    scrollTrigger: {
+                        trigger: item,
+                        containerAnimation: containerAnimation,
+                        start: 'left center',
+                        end: 'right center',
+                        scrub: 1
+                    }
+                });
+
+                gsap.from(item, {
+                    opacity: 0.3,
+                    scale: 0.9,
+                    scrollTrigger: {
+                        trigger: item,
+                        containerAnimation: containerAnimation,
+                        start: 'left 80%',
+                        end: 'left 50%',
+                        scrub: 1
+                    }
+                });
+            });
+        }
+
+        // Case Study Cards
+        const caseCards = document.querySelectorAll('.case-card');
+        const caseModal = document.querySelector('.case-modal');
+        const caseModalClose = document.querySelector('.case-modal-close');
+
+        caseCards.forEach((card, index) => {
+            // Reveal animation
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse'
+                },
+                y: 100,
+                opacity: 0,
+                duration: 0.8,
+                delay: index * 0.2,
+                ease: 'power4.out'
+            });
+
+            // Hover effects
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    scale: 1.02,
+                    duration: 0.4,
+                    ease: 'power2.out'
+                });
+                gsap.to(card.querySelector('.case-bg'), {
+                    scale: 1.1,
+                    duration: 0.6
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    scale: 1,
+                    duration: 0.4
+                });
+                gsap.to(card.querySelector('.case-bg'), {
+                    scale: 1,
+                    duration: 0.6
+                });
+            });
+
+            // Click to expand
+            card.addEventListener('click', () => {
+                const title = card.querySelector('.case-title').textContent;
+                const tag = card.querySelector('.case-tag').textContent;
+                const description = card.querySelector('.case-description').textContent;
+
+                document.querySelector('.modal-tag').textContent = tag;
+                document.querySelector('.case-modal-title').textContent = title;
+                document.querySelector('.case-modal-description').textContent = description;
+
+                caseModal.classList.add('active');
+                
+                gsap.fromTo(caseModal, 
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.3 }
+                );
+
+                gsap.from('.case-modal-left', {
+                    x: -100,
+                    opacity: 0,
+                    duration: 0.6,
+                    delay: 0.2,
+                    ease: 'power4.out'
+                });
+
+                gsap.from('.case-modal-right', {
+                    x: 100,
+                    opacity: 0,
+                    duration: 0.6,
+                    delay: 0.2,
+                    ease: 'power4.out'
+                });
+
+                gsap.from('.case-modal-title', {
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    delay: 0.4,
+                    ease: 'power4.out'
+                });
+
+                document.body.classList.add('modal-open');
+            });
+        });
+
+        // Close modal
+        caseModalClose.addEventListener('click', () => {
+            gsap.to(caseModal, {
+                opacity: 0,
+                duration: 0.3,
+                onComplete: () => {
+                    caseModal.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                }
+            });
+        });
+
+        // Contact Text Animation
+        const contactWords = document.querySelectorAll('.contact-text span');
+        contactWords.forEach((word, index) => {
+            gsap.from(word, {
+                scrollTrigger: {
+                    trigger: '.contact',
+                    start: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.6,
+                delay: index * 0.1,
+                ease: 'back.out(1.7)'
+            });
+
+            // Cursor distortion effect on contact text
+            word.addEventListener('mouseenter', () => {
+                gsap.to(cursor, {
+                    scale: 2,
+                    duration: 0.3
+                });
+            });
+
+            word.addEventListener('mouseleave', () => {
+                gsap.to(cursor, {
+                    scale: 1,
+                    duration: 0.3
+                });
+            });
+        });
+
+        // Contact Link Magnetic Effect
+        const contactLink = document.querySelector('.contact-link');
+        if (contactLink) {
+            contactLink.addEventListener('mousemove', (e) => {
+                const rect = contactLink.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(contactLink, {
+                    x: x * 0.2,
+                    y: y * 0.2,
+                    duration: 0.3
+                });
+            });
+
+            contactLink.addEventListener('mouseleave', () => {
+                gsap.to(contactLink, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.3)'
+                });
+            });
+        }
+
+        // Smooth scroll for navigation (if any internal links)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect on scroll
+        gsap.utils.toArray('.section-header').forEach(header => {
+            gsap.to(header, {
+                y: -30,
+                scrollTrigger: {
+                    trigger: header,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+        });
+
+        // Footer animation
+        gsap.from('footer', {
+            scrollTrigger: {
+                trigger: 'footer',
+                start: 'top 90%',
+                toggleActions: 'play none none reverse'
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8
+        });
+    </script>
+</body>
+</html>
