@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Forge</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Book Forge</h1>
+    <p class="subtitle">Generate professionally structured, 100+ page books from one prompt.</p>
+
+    <form method="post" action="/generate" class="card">
+      <label for="author">Author Name</label>
+      <input id="author" name="author" placeholder="Your Name" />
+
+      <label for="prompt">Book Prompt</label>
+      <textarea id="prompt" name="prompt" rows="10" placeholder="Describe the topic, style, and desired angle..."></textarea>
+
+      <button type="submit">Generate Book PDF</button>
+    </form>
+
+    {% if success %}
+    <section class="result">
+      <h2>Book Ready: {{ title }}</h2>
+      <a href="/download/{{ download_name }}" class="download">Download PDF</a>
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>
