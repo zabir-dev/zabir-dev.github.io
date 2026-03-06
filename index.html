@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matcha Reverie — A ceremonial digital escape</title>
+    <meta
+      name="description"
+      content="An immersive single-file matcha website with layered parallax, cinematic motion, and interactive storytelling."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #05130c;
+        --bg-soft: #0d2117;
+        --panel: rgba(12, 31, 21, 0.72);
+        --panel-strong: rgba(17, 40, 28, 0.94);
+        --line: rgba(189, 255, 193, 0.12);
+        --text: #effbea;
+        --muted: rgba(239, 251, 234, 0.72);
+        --matcha: #8ff08d;
+        --matcha-soft: #d3ff80;
+        --sage: #7ec68b;
+        --shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+        --radius-xl: 32px;
+        --radius-lg: 24px;
+        --radius-md: 18px;
+        --content: min(1180px, calc(100vw - 48px));
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background:
+          radial-gradient(circle at 20% 15%, rgba(143, 240, 141, 0.2), transparent 28%),
+          radial-gradient(circle at 78% 18%, rgba(211, 255, 128, 0.18), transparent 22%),
+          radial-gradient(circle at 50% 120%, rgba(63, 137, 88, 0.28), transparent 38%),
+          linear-gradient(180deg, #041009 0%, #07160f 28%, #06160e 60%, #02110a 100%);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 110px 110px;
+        mask-image: radial-gradient(circle at center, black 28%, transparent 90%);
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .ambient {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .orb {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(10px);
+        opacity: 0.5;
+        mix-blend-mode: screen;
+      }
+
+      .orb--one {
+        width: 22rem;
+        height: 22rem;
+        background: radial-gradient(circle, rgba(154, 255, 118, 0.48), transparent 68%);
+        top: 4%;
+        left: -4rem;
+      }
+
+      .orb--two {
+        width: 28rem;
+        height: 28rem;
+        background: radial-gradient(circle, rgba(128, 255, 227, 0.18), transparent 70%);
+        top: 32%;
+        right: -7rem;
+      }
+
+      .orb--three {
+        width: 26rem;
+        height: 26rem;
+        background: radial-gradient(circle, rgba(211, 255, 128, 0.16), transparent 70%);
+        bottom: -5rem;
+        left: 18%;
+      }
+
+      #particle-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.85;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+      }
+
+      .nav {
+        width: var(--content);
+        margin: 0 auto;
+        padding: 28px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 12;
+      }
+
+      .nav-shell {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 22px;
+        border: 1px solid rgba(228, 255, 217, 0.1);
+        border-radius: 999px;
+        background: rgba(5, 19, 12, 0.58);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 80px rgba(0, 0, 0, 0.18);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(240, 255, 227, 0.92), transparent 30%),
+          conic-gradient(from 180deg, #95ff94, #d7ff8d, #5fe086, #95ff94);
+        color: #0b140c;
+        box-shadow:
+          inset 0 0 20px rgba(255, 255, 255, 0.25),
+          0 10px 35px rgba(149, 255, 148, 0.22);
+      }
+
+      .nav-links {
+        display: inline-flex;
+        gap: 18px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .pill {
+        padding: 12px 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(216, 255, 200, 0.14);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+        transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+      }
+
+      .pill:hover,
+      .pill:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(216, 255, 200, 0.34);
+        background: linear-gradient(180deg, rgba(155, 255, 152, 0.2), rgba(255, 255, 255, 0.03));
+      }
+
+      .hero {
+        width: var(--content);
+        margin: 0 auto;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 36px;
+        align-items: center;
+        padding: 42px 0 80px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(227, 255, 209, 0.14);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.75rem;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #d7ff8d, #86ffb5);
+        box-shadow: 0 0 20px rgba(169, 255, 130, 0.82);
+      }
+
+      .hero-copy {
+        position: relative;
+      }
+
+      .hero-copy h1 {
+        margin: 22px 0 18px;
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        font-size: clamp(4rem, 8vw, 7.4rem);
+        line-height: 0.9;
+        letter-spacing: -0.04em;
+        max-width: 10ch;
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #f4ffe7 8%, #b9ff95 44%, #ebff89 84%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-copy p {
+        max-width: 34rem;
+        margin: 0;
+        font-size: 1.08rem;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 30px;
+      }
+
+      .cta-primary,
+      .cta-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        padding: 15px 22px;
+        border: 1px solid transparent;
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+      }
+
+      .cta-primary {
+        background: linear-gradient(135deg, #adff87, #7df0ac);
+        color: #072010;
+        box-shadow: 0 20px 45px rgba(142, 240, 141, 0.24);
+      }
+
+      .cta-secondary {
+        border-color: rgba(224, 255, 215, 0.14);
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .cta-primary:hover,
+      .cta-primary:focus-visible,
+      .cta-secondary:hover,
+      .cta-secondary:focus-visible {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 22px 55px rgba(0, 0, 0, 0.24);
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 34px;
+      }
+
+      .meta-card {
+        padding: 18px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(220, 255, 212, 0.1);
+        backdrop-filter: blur(18px);
+      }
+
+      .meta-card strong {
+        display: block;
+        font-size: 1.4rem;
+        margin-bottom: 6px;
+      }
+
+      .meta-card span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .hero-visual {
+        position: relative;
+        min-height: 720px;
+        display: grid;
+        place-items: center;
+      }
+
+      .halo {
+        position: absolute;
+        width: min(76vw, 560px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at center, rgba(223, 255, 153, 0.22), transparent 44%),
+          radial-gradient(circle at 50% 50%, rgba(128, 255, 174, 0.22), transparent 58%);
+        filter: blur(6px);
+      }
+
+      .product-stage {
+        position: relative;
+        width: min(80vw, 540px);
+        aspect-ratio: 0.88;
+        border-radius: 44px;
+        padding: 22px;
+        border: 1px solid rgba(227, 255, 208, 0.12);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+          linear-gradient(135deg, rgba(11, 35, 23, 0.72), rgba(7, 17, 11, 0.58));
+        backdrop-filter: blur(22px);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .product-stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.16), transparent 12%),
+          linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 35%);
+        pointer-events: none;
+      }
+
+      .scene-layer {
+        position: absolute;
+        border-radius: 999px;
+      }
+
+      .leaf-ring {
+        width: 420px;
+        height: 420px;
+        border: 1px solid rgba(225, 255, 215, 0.14);
+        top: 40px;
+        right: 20px;
+        opacity: 0.9;
+      }
+
+      .leaf-ring::before,
+      .leaf-ring::after {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border: 1px dashed rgba(225, 255, 215, 0.12);
+        border-radius: inherit;
+      }
+
+      .tea-bowl {
+        position: absolute;
+        inset: 50% auto auto 50%;
+        width: 310px;
+        height: 310px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background:
+          radial-gradient(circle at 45% 32%, rgba(245, 255, 218, 0.9), transparent 12%),
+          radial-gradient(circle at 50% 42%, rgba(139, 255, 134, 0.24), transparent 32%),
+          radial-gradient(circle at 50% 60%, rgba(52, 121, 52, 0.2), transparent 54%),
+          radial-gradient(circle at center, #b8ff7f 0%, #79da5a 38%, #2e6f35 72%, #173420 100%);
+        border: 12px solid rgba(236, 248, 225, 0.18);
+        box-shadow:
+          inset 0 24px 30px rgba(255, 255, 255, 0.28),
+          inset 0 -18px 26px rgba(0, 0, 0, 0.26),
+          0 30px 80px rgba(0, 0, 0, 0.34);
+      }
+
+      .tea-bowl::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: inherit;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(218, 255, 164, 0.18), transparent 66%),
+          repeating-radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0 2px, transparent 2px 16px);
+        mix-blend-mode: screen;
+      }
+
+      .tea-sheen {
+        position: absolute;
+        inset: 22% 18% auto auto;
+        width: 85px;
+        height: 65px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.52), transparent 72%);
+        filter: blur(2px);
+      }
+
+      .floating-badge,
+      .floating-panel {
+        position: absolute;
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(228, 255, 214, 0.12);
+        background: rgba(10, 27, 18, 0.68);
+        backdrop-filter: blur(22px);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.22);
+      }
+
+      .floating-badge {
+        top: 42px;
+        left: 10px;
+        padding: 16px 18px;
+        width: 170px;
+      }
+
+      .floating-badge small,
+      .floating-panel small {
+        display: block;
+        color: var(--muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.68rem;
+      }
+
+      .floating-badge strong,
+      .floating-panel strong {
+        font-size: 1.1rem;
+      }
+
+      .floating-panel {
+        right: 0;
+        bottom: 48px;
+        width: 220px;
+        padding: 18px 18px 20px;
+      }
+
+      .floating-panel p {
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 0.9rem;
+        margin: 8px 0 0;
+      }
+
+      .vertical-copy {
+        position: absolute;
+        left: -2px;
+        bottom: 42px;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+        font-size: 0.7rem;
+        color: rgba(238, 251, 233, 0.52);
+      }
+
+      section {
+        width: var(--content);
+        margin: 0 auto;
+        padding: 56px 0;
+      }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 28px;
+        align-items: flex-end;
+        margin-bottom: 28px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        font-size: clamp(2.8rem, 6vw, 4.8rem);
+        line-height: 0.96;
+        letter-spacing: -0.04em;
+      }
+
+      .section-heading p {
+        margin: 0;
+        max-width: 33rem;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .story-grid,
+      .product-grid,
+      .ritual-grid,
+      .final-grid {
+        display: grid;
+        gap: 20px;
+      }
+
+      .story-grid {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+
+      .panel {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+          var(--panel);
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow);
+      }
+
+      .panel-inner {
+        padding: 28px;
+      }
+
+      .story-large {
+        min-height: 520px;
+        display: grid;
+        align-items: end;
+      }
+
+      .panel-glow {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(164, 255, 114, 0.22), transparent 72%);
+        top: -60px;
+        right: -60px;
+      }
+
+      .story-large .panel-inner {
+        max-width: 36rem;
+      }
+
+      .story-large h3,
+      .story-card h3,
+      .ritual-card h3,
+      .feature-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.45rem;
+      }
+
+      .story-large p,
+      .story-card p,
+      .ritual-card p,
+      .feature-card p,
+      .product-copy p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .story-stack {
+        display: grid;
+        gap: 20px;
+      }
+
+      .story-card {
+        min-height: 250px;
+      }
+
+      .story-card .accent-line {
+        width: 42px;
+        height: 3px;
+        border-radius: 999px;
+        margin-bottom: 18px;
+        background: linear-gradient(90deg, #e6ff96, #87ffba);
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .product-card {
+        position: relative;
+        min-height: 420px;
+        padding: 24px;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+        box-shadow: var(--shadow);
+        isolation: isolate;
+      }
+
+      .product-art {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .product-art::before {
+        content: "";
+        position: absolute;
+        inset: 10% -20% auto auto;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 68%);
+      }
+
+      .product-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(2px);
+      }
+
+      .product-card:nth-child(1) {
+        background:
+          linear-gradient(180deg, rgba(196, 255, 152, 0.18), rgba(255, 255, 255, 0.03)),
+          linear-gradient(135deg, rgba(10, 33, 17, 0.86), rgba(6, 20, 13, 0.92));
+      }
+
+      .product-card:nth-child(2) {
+        background:
+          linear-gradient(180deg, rgba(154, 255, 197, 0.16), rgba(255, 255, 255, 0.03)),
+          linear-gradient(135deg, rgba(10, 33, 29, 0.86), rgba(4, 16, 15, 0.92));
+      }
+
+      .product-card:nth-child(3) {
+        background:
+          linear-gradient(180deg, rgba(234, 255, 160, 0.18), rgba(255, 255, 255, 0.03)),
+          linear-gradient(135deg, rgba(32, 30, 12, 0.86), rgba(18, 17, 8, 0.92));
+      }
+
+      .product-card:nth-child(1) .product-orb {
+        width: 220px;
+        height: 220px;
+        top: 18%;
+        right: 12%;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.36), transparent 18%),
+          radial-gradient(circle at 50% 50%, rgba(173, 255, 135, 0.88), rgba(93, 190, 88, 0.38) 62%, transparent 72%);
+      }
+
+      .product-card:nth-child(2) .product-orb {
+        width: 250px;
+        height: 250px;
+        top: 14%;
+        right: 8%;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 14%),
+          conic-gradient(from 45deg, rgba(193, 255, 221, 0.94), rgba(117, 229, 202, 0.88), rgba(120, 255, 213, 0.4), rgba(193, 255, 221, 0.94));
+      }
+
+      .product-card:nth-child(3) .product-orb {
+        width: 240px;
+        height: 240px;
+        top: 15%;
+        right: 10%;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.32), transparent 14%),
+          radial-gradient(circle at 52% 52%, rgba(246, 255, 171, 0.92), rgba(224, 210, 118, 0.52) 58%, transparent 72%);
+      }
+
+      .product-copy {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        height: 100%;
+      }
+
+      .product-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        align-self: start;
+        margin-bottom: auto;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(244, 255, 236, 0.88);
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .product-copy h3 {
+        font-size: 2rem;
+        margin: 0 0 10px;
+      }
+
+      .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-top: 22px;
+        color: rgba(244, 255, 236, 0.85);
+      }
+
+      .product-meta span:last-child {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .ritual-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .ritual-card {
+        padding: 24px;
+        min-height: 280px;
+      }
+
+      .ritual-index {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 3rem;
+        line-height: 1;
+        display: block;
+        margin-bottom: 18px;
+        color: rgba(236, 255, 220, 0.82);
+      }
+
+      .motion-strip {
+        margin: 24px 0 10px;
+        overflow: hidden;
+        border-top: 1px solid rgba(233, 255, 220, 0.08);
+        border-bottom: 1px solid rgba(233, 255, 220, 0.08);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .motion-track {
+        display: flex;
+        gap: 24px;
+        width: max-content;
+        padding: 16px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-size: 0.8rem;
+        color: rgba(239, 251, 234, 0.66);
+        animation: marquee 24s linear infinite;
+      }
+
+      @keyframes marquee {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      .feature-card {
+        min-height: 540px;
+      }
+
+      .feature-scape {
+        position: relative;
+        min-height: 320px;
+        margin-top: 20px;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(235, 255, 225, 0.08);
+        background:
+          radial-gradient(circle at 22% 18%, rgba(245, 255, 185, 0.26), transparent 18%),
+          radial-gradient(circle at 70% 30%, rgba(125, 240, 172, 0.18), transparent 28%),
+          linear-gradient(180deg, rgba(13, 35, 23, 0.9), rgba(5, 17, 10, 0.98));
+      }
+
+      .landscape {
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 70%;
+      }
+
+      .mountain {
+        position: absolute;
+        bottom: 0;
+        width: 52%;
+        aspect-ratio: 1.1;
+        background: linear-gradient(180deg, rgba(43, 88, 48, 0.75), rgba(8, 22, 13, 0.98));
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.24));
+      }
+
+      .mountain--one {
+        left: -2%;
+      }
+
+      .mountain--two {
+        right: -2%;
+        width: 58%;
+      }
+
+      .sun {
+        position: absolute;
+        top: 18%;
+        left: 50%;
+        width: 140px;
+        height: 140px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(255, 254, 223, 0.96) 0%, rgba(249, 255, 177, 0.68) 48%, transparent 72%);
+        filter: blur(0.5px);
+      }
+
+      .mist {
+        position: absolute;
+        inset: auto 0 12% 0;
+        height: 44%;
+        background: linear-gradient(180deg, transparent, rgba(203, 255, 182, 0.09), rgba(255, 255, 255, 0.03), transparent);
+        filter: blur(24px);
+      }
+
+      .final-grid {
+        grid-template-columns: 1fr 0.9fr;
+        align-items: stretch;
+      }
+
+      .newsletter {
+        display: grid;
+        gap: 18px;
+      }
+
+      .email-shell {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid rgba(234, 255, 223, 0.1);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .email-shell input {
+        width: 100%;
+        border: 0;
+        outline: none;
+        padding: 10px 14px;
+        border-radius: inherit;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+      }
+
+      .email-shell input::placeholder {
+        color: rgba(239, 251, 234, 0.45);
+      }
+
+      .email-shell button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        background: linear-gradient(135deg, #b0ff8d, #81f0ae);
+        color: #05200f;
+        cursor: pointer;
+      }
+
+      .quote {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 100%;
+      }
+
+      .quote blockquote {
+        margin: 0;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+      }
+
+      .quote footer {
+        color: var(--muted);
+        margin-top: 20px;
+      }
+
+      footer.site-footer {
+        width: var(--content);
+        margin: 0 auto;
+        padding: 0 0 40px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: rgba(239, 251, 234, 0.52);
+        font-size: 0.9rem;
+      }
+
+      @keyframes ring-spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes float-soft {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-16px);
+        }
+      }
+
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .hero [data-reveal] {
+        opacity: 1;
+        transform: none;
+      }
+
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .leaf-ring {
+        animation: ring-spin 28s linear infinite;
+      }
+
+      .tea-bowl {
+        animation: float-soft 2.6s ease-in-out infinite alternate;
+      }
+
+      .floating-badge,
+      .floating-panel {
+        animation: float-soft 3.4s ease-in-out infinite alternate;
+      }
+
+      .floating-panel {
+        animation-delay: 0.4s;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      @media (max-width: 1080px) {
+        .hero,
+        .story-grid,
+        .final-grid,
+        .product-grid,
+        .ritual-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 24px;
+        }
+
+        .hero-visual {
+          min-height: 620px;
+          order: -1;
+        }
+
+        .section-heading {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        :root {
+          --content: calc(100vw - 24px);
+          --radius-xl: 24px;
+        }
+
+        .nav {
+          padding-top: 14px;
+        }
+
+        .nav-shell {
+          padding: 14px 16px;
+        }
+
+        .hero {
+          gap: 22px;
+          padding-bottom: 42px;
+        }
+
+        .hero-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .product-stage {
+          width: 100%;
+          min-height: 500px;
+        }
+
+        .tea-bowl {
+          width: 240px;
+          height: 240px;
+        }
+
+        .leaf-ring {
+          width: 310px;
+          height: 310px;
+          right: 4px;
+          top: 70px;
+        }
+
+        .floating-badge,
+        .floating-panel {
+          position: relative;
+          inset: auto;
+          width: auto;
+          margin-top: 16px;
+        }
+
+        .vertical-copy {
+          display: none;
+        }
+
+        .email-shell {
+          flex-direction: column;
+          border-radius: 24px;
+        }
+
+        footer.site-footer {
+          flex-direction: column;
+          padding-bottom: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true">
+      <div class="orb orb--one" data-parallax data-speed="-0.08"></div>
+      <div class="orb orb--two" data-parallax data-speed="0.12"></div>
+      <div class="orb orb--three" data-parallax data-speed="-0.06"></div>
+      <canvas id="particle-canvas"></canvas>
+    </div>
+
+    <div class="page">
+      <nav class="nav">
+        <div class="nav-shell">
+          <a class="brand" href="#top" aria-label="Matcha Reverie home">
+            <span class="brand-mark">茶</span>
+            <span>Matcha Reverie</span>
+          </a>
+          <div class="nav-links">
+            <a href="#story">Origin</a>
+            <a href="#collection">Collection</a>
+            <a href="#ritual">Ritual</a>
+            <a class="pill" href="#reserve">Reserve a tasting</a>
+          </div>
+        </div>
+      </nav>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow" data-reveal>Kyoto-grown · award-winning ceremonial grade</span>
+            <h1 class="hero-title" data-reveal>
+              The <span class="gradient-text">future ritual</span> of matcha.
+            </h1>
+            <p data-reveal>
+              A cinematic one-page escape blending velvet gradients, luminous motion, and tactile
+              storytelling into a modern temple for handcrafted Japanese tea culture.
+            </p>
+            <div class="cta-row" data-reveal>
+              <a class="cta-primary" href="#collection">Explore the collection</a>
+              <a class="cta-secondary" href="#ritual">Discover the ritual</a>
+            </div>
+            <div class="hero-meta" data-reveal>
+              <article class="meta-card">
+                <strong>30g</strong>
+                <span>stone-milled tins from Uji’s first harvest</span>
+              </article>
+              <article class="meta-card">
+                <strong>70%</strong>
+                <span>shade-grown for a lush umami-forward finish</span>
+              </article>
+              <article class="meta-card">
+                <strong>∞</strong>
+                <span>endlessly scrollable moments of calm and clarity</span>
+              </article>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="halo" data-parallax data-speed="0.08"></div>
+            <div class="product-stage" id="tilt-stage">
+              <div class="scene-layer leaf-ring"></div>
+              <div class="floating-badge">
+                <small>Texture</small>
+                <strong>Silken froth</strong>
+              </div>
+              <div class="tea-bowl">
+                <div class="tea-sheen"></div>
+              </div>
+              <div class="floating-panel">
+                <small>Signature note</small>
+                <strong>marine sweetness &amp; pistachio velvet</strong>
+                <p>
+                  Whisked to a neon glow with an aroma that feels like an art installation at dawn.
+                </p>
+              </div>
+              <div class="vertical-copy">ceremonial • immersive • luminous • tactile</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="motion-strip" aria-hidden="true">
+          <div class="motion-track">
+            <span>ceremonial grade</span>
+            <span>mindful luxury</span>
+            <span>scroll-triggered motion</span>
+            <span>kinetic parallax</span>
+            <span>first harvest</span>
+            <span>future ritual</span>
+            <span>ceremonial grade</span>
+            <span>mindful luxury</span>
+            <span>scroll-triggered motion</span>
+            <span>kinetic parallax</span>
+            <span>first harvest</span>
+            <span>future ritual</span>
+          </div>
+        </div>
+
+        <section id="story">
+          <div class="section-heading" data-reveal>
+            <h2>Designed like a digital tasting menu.</h2>
+            <p>
+              Each scroll layer is choreographed to feel like steam lifting from a bowl—slow,
+              dimensional, and deeply sensorial. Matcha Reverie pairs ceremonial storytelling with
+              interactive polish usually reserved for flagship launches.
+            </p>
+          </div>
+          <div class="story-grid">
+            <article class="panel story-large" data-reveal>
+              <div class="panel-glow"></div>
+              <div class="panel-inner">
+                <span class="eyebrow">Luminous craft</span>
+                <h3>Stone-milled brilliance, cultivated in the shadow of cedar-covered hills.</h3>
+                <p>
+                  Our fictional atelier sources tencha leaves from micro-lots in Uji, then renders
+                  them into an electric green powder that dissolves into pure velvet. The interface
+                  mirrors that contrast: minimal architecture, maximal atmosphere.
+                </p>
+              </div>
+            </article>
+            <div class="story-stack">
+              <article class="panel story-card" data-reveal>
+                <div class="panel-inner">
+                  <div class="accent-line"></div>
+                  <h3>Frictionless stillness</h3>
+                  <p>
+                    Native smooth scrolling and layered transforms create the illusion of a
+                    weightless journey, with every card sliding in like a whispered invitation.
+                  </p>
+                </div>
+              </article>
+              <article class="panel story-card" data-reveal>
+                <div class="panel-inner">
+                  <div class="accent-line"></div>
+                  <h3>Depth that breathes</h3>
+                  <p>
+                    Interactive pointer tilt, micro-particles, and cinematic light blooms turn a
+                    single HTML document into an art-directed, Awwwards-inspired experience.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="collection">
+          <div class="section-heading" data-reveal>
+            <h2>Three blends. Three moods. Infinite glow.</h2>
+            <p>
+              The collection lives inside sculptural cards with hovering highlights, layered
+              gradients, and product atmospheres that shift with scroll and cursor movement.
+            </p>
+          </div>
+          <div class="product-grid">
+            <article class="product-card tilt-card" data-reveal>
+              <div class="product-art">
+                <div class="product-orb" data-parallax data-speed="0.14"></div>
+              </div>
+              <div class="product-copy">
+                <span class="product-label">Ceremony</span>
+                <h3>Verdant Zero</h3>
+                <p>
+                  A hyper-fresh ceremonial grade with jade foam, sweet pea aroma, and a finish that
+                  drifts between vanilla bean and spring rain.
+                </p>
+                <div class="product-meta">
+                  <span>$34</span>
+                  <span>silk umami · first flush</span>
+                </div>
+              </div>
+            </article>
+            <article class="product-card tilt-card" data-reveal>
+              <div class="product-art">
+                <div class="product-orb" data-parallax data-speed="0.18"></div>
+              </div>
+              <div class="product-copy">
+                <span class="product-label">Sparkling latte</span>
+                <h3>Celestial Foam</h3>
+                <p>
+                  Created for matcha cloud lattes and tonic pours, with cooling sea mineral notes
+                  and a glowing finish designed for golden hour pours.
+                </p>
+                <div class="product-meta">
+                  <span>$28</span>
+                  <span>marine sweetness · crystal lift</span>
+                </div>
+              </div>
+            </article>
+            <article class="product-card tilt-card" data-reveal>
+              <div class="product-art">
+                <div class="product-orb" data-parallax data-speed="0.12"></div>
+              </div>
+              <div class="product-copy">
+                <span class="product-label">Night ritual</span>
+                <h3>Solar Umber</h3>
+                <p>
+                  Roasted hojicha-meets-matcha depth with toasted rice warmth, crafted for moonlit
+                  whisking and dessert-like moments of calm.
+                </p>
+                <div class="product-meta">
+                  <span>$31</span>
+                  <span>toasted glow · amber finish</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="ritual">
+          <div class="section-heading" data-reveal>
+            <h2>A ritual scored in motion.</h2>
+            <p>
+              The choreography translates the ceremony into contemporary motion design—measured,
+              immersive, and satisfyingly tactile from first hover to final scroll.
+            </p>
+          </div>
+          <div class="ritual-grid">
+            <article class="panel ritual-card" data-reveal>
+              <div class="panel-inner">
+                <span class="ritual-index">01</span>
+                <h3>Sift</h3>
+                <p>
+                  Clouds of powder drift upward as the page loads, evoking a fine sieve releasing a
+                  neon-soft mist into the bowl.
+                </p>
+              </div>
+            </article>
+            <article class="panel ritual-card" data-reveal>
+              <div class="panel-inner">
+                <span class="ritual-index">02</span>
+                <h3>Pour</h3>
+                <p>
+                  Parallax layers stretch the scene vertically, like water falling through space in
+                  a slowed cinematic shot.
+                </p>
+              </div>
+            </article>
+            <article class="panel ritual-card" data-reveal>
+              <div class="panel-inner">
+                <span class="ritual-index">03</span>
+                <h3>Whisk</h3>
+                <p>
+                  Animated rings and cursor-sensitive tilt give every frame a soft rotational pulse,
+                  like whisk strokes catching light.
+                </p>
+              </div>
+            </article>
+            <article class="panel ritual-card" data-reveal>
+              <div class="panel-inner">
+                <span class="ritual-index">04</span>
+                <h3>Glow</h3>
+                <p>
+                  Scroll-aware reveals cascade luminously through the page, letting content appear
+                  like froth blooming across the surface.
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section>
+          <div class="panel feature-card" data-reveal>
+            <div class="panel-inner">
+              <span class="eyebrow">Parallax landscape</span>
+              <h3>Every scroll breathes.</h3>
+              <p>
+                Built with modern browser capabilities and animation tooling, the landscape below
+                shifts at multiple depths, showing how even a single HTML file can feel expansive,
+                premium, and alive.
+              </p>
+              <div class="feature-scape">
+                <div class="sun" data-parallax data-speed="0.1"></div>
+                <div class="landscape">
+                  <div class="mountain mountain--one" data-parallax data-speed="-0.05"></div>
+                  <div class="mountain mountain--two" data-parallax data-speed="0.06"></div>
+                  <div class="mist" data-parallax data-speed="0.14"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="reserve">
+          <div class="final-grid">
+            <article class="panel newsletter" data-reveal>
+              <div class="panel-inner">
+                <span class="eyebrow">Reserve a tasting</span>
+                <h2>Experience the drop before the rest of the world.</h2>
+                <p>
+                  Join the list for private tastings, immersive pop-ups, and the next collection of
+                  ceremonial blends, vessels, and editorial stories.
+                </p>
+                <form class="email-shell">
+                  <input type="email" placeholder="Enter your email for the next pour" />
+                  <button type="submit">Join the waitlist</button>
+                </form>
+              </div>
+            </article>
+            <article class="panel quote" data-reveal>
+              <div class="panel-inner">
+                <blockquote>
+                  “A single-file experience that feels less like a landing page and more like a
+                  moonlit tea ceremony choreographed by light.”
+                </blockquote>
+                <footer>Imaginary Awwwards jury, probably</footer>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Matcha Reverie — Concept site crafted as a single immersive HTML experience.</span>
+        <span>Made for glow, stillness, and an unreasonable amount of green.</span>
+      </footer>
+    </div>
+
+    <script>
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.18, rootMargin: "0px 0px -8% 0px" }
+      );
+
+      document.querySelectorAll("[data-reveal]").forEach((node) => {
+        if (!node.closest(".hero")) {
+          revealObserver.observe(node);
+        }
+      });
+
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", (event) => {
+          const targetId = anchor.getAttribute("href");
+          const target = document.querySelector(targetId);
+
+          if (!target) {
+            return;
+          }
+
+          event.preventDefault();
+          target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+        });
+      });
+
+      const parallaxNodes = [...document.querySelectorAll("[data-parallax]")];
+
+      let ticking = false;
+
+      function updateParallax() {
+        const scrollY = window.scrollY;
+
+        parallaxNodes.forEach((node) => {
+          const speed = Number(node.dataset.speed || 0);
+          const y = scrollY * speed;
+          node.style.transform = `translate3d(0, ${y}px, 0)`;
+        });
+
+        ticking = false;
+      }
+
+      if (!prefersReducedMotion) {
+        updateParallax();
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!ticking) {
+              window.requestAnimationFrame(updateParallax);
+              ticking = true;
+            }
+          },
+          { passive: true }
+        );
+      }
+
+      const tiltTargets = document.querySelectorAll(".tilt-card, #tilt-stage");
+      tiltTargets.forEach((card) => {
+        card.addEventListener("pointermove", (event) => {
+          if (prefersReducedMotion) {
+            return;
+          }
+
+          const rect = card.getBoundingClientRect();
+          const px = (event.clientX - rect.left) / rect.width;
+          const py = (event.clientY - rect.top) / rect.height;
+          const rotateY = (px - 0.5) * 14;
+          const rotateX = (0.5 - py) * 12;
+          card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
+        });
+
+        card.addEventListener("pointerleave", () => {
+          card.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0)";
+        });
+      });
+
+      const canvas = document.getElementById("particle-canvas");
+      const context = canvas.getContext("2d");
+      const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      const MAX_PARTICLES = 42;
+      const PARTICLE_DENSITY_DIVISOR = 28;
+      const POINTER_INFLUENCE = 0.00003;
+      let particles = [];
+
+      function setCanvasSize() {
+        const ratio = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * ratio;
+        canvas.height = window.innerHeight * ratio;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+        particles = Array.from(
+          { length: Math.min(MAX_PARTICLES, Math.floor(window.innerWidth / PARTICLE_DENSITY_DIVISOR)) },
+          () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 2.2 + 0.6,
+            speedX: (Math.random() - 0.5) * 0.26,
+            speedY: Math.random() * -0.5 - 0.08,
+            alpha: Math.random() * 0.6 + 0.12,
+          })
+        );
+      }
+
+      function drawParticles() {
+        context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        particles.forEach((particle) => {
+          particle.x += particle.speedX + (pointer.x - window.innerWidth / 2) * POINTER_INFLUENCE;
+          particle.y += particle.speedY;
+
+          if (particle.y < -12) {
+            particle.y = window.innerHeight + 12;
+            particle.x = Math.random() * window.innerWidth;
+          }
+
+          if (particle.x < -12) particle.x = window.innerWidth + 12;
+          if (particle.x > window.innerWidth + 12) particle.x = -12;
+
+          const gradient = context.createRadialGradient(
+            particle.x,
+            particle.y,
+            0,
+            particle.x,
+            particle.y,
+            particle.size * 6
+          );
+          gradient.addColorStop(0, `rgba(224, 255, 177, ${particle.alpha})`);
+          gradient.addColorStop(1, "rgba(224, 255, 177, 0)");
+
+          context.fillStyle = gradient;
+          context.beginPath();
+          context.arc(particle.x, particle.y, particle.size * 6, 0, Math.PI * 2);
+          context.fill();
+        });
+
+        requestAnimationFrame(drawParticles);
+      }
+
+      window.addEventListener("pointermove", (event) => {
+        pointer.x = event.clientX;
+        pointer.y = event.clientY;
+      });
+
+      window.addEventListener("resize", () => {
+        setCanvasSize();
+        updateParallax();
+      });
+
+      document.querySelector(".email-shell")?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const button = event.currentTarget.querySelector("button");
+        const input = event.currentTarget.querySelector("input");
+        button.textContent = "You’re on the list";
+        input.value = "";
+      });
+
+      setCanvasSize();
+      drawParticles();
+    </script>
+  </body>
+</html>
