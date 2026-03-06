@@ -147,14 +147,13 @@
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', (e) => {
-        const target = document.querySelector(link.getAttribute('href'));
+        const href = link.getAttribute('href');
+        if (href === '#') return;
+        const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          gsap.to(window, {
-            scrollTo: { y: target, offsetY: 0 },
-            duration: 1.2,
-            ease: 'power3.inOut'
-          });
+          const y = target.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
         }
       });
     });
