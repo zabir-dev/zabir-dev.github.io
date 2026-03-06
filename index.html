@@ -33,7 +33,7 @@
       }
 
       html {
-        scroll-behavior: auto;
+        scroll-behavior: smooth;
       }
 
       body {
@@ -370,7 +370,6 @@
 
       .scene-layer {
         position: absolute;
-        inset: auto;
         border-radius: 999px;
       }
 
@@ -500,13 +499,13 @@
         display: flex;
         justify-content: space-between;
         gap: 28px;
-        align-items: end;
+        align-items: flex-end;
         margin-bottom: 28px;
       }
 
       .section-heading h2 {
         margin: 0;
-        font-family: "Cormorant Garamond", serif;
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
         font-size: clamp(2.8rem, 6vw, 4.8rem);
         line-height: 0.96;
         letter-spacing: -0.04em;
@@ -555,7 +554,6 @@
 
       .panel-glow {
         position: absolute;
-        inset: auto;
         width: 260px;
         height: 260px;
         border-radius: 50%;
@@ -1002,7 +1000,7 @@
 
         .section-heading {
           flex-direction: column;
-          align-items: start;
+          align-items: flex-start;
         }
 
         .nav-links {
@@ -1012,7 +1010,7 @@
 
       @media (max-width: 720px) {
         :root {
-          --content: min(100vw - 24px, 100vw - 24px);
+          --content: calc(100vw - 24px);
           --radius-xl: 24px;
         }
 
@@ -1475,6 +1473,9 @@
       const canvas = document.getElementById("particle-canvas");
       const context = canvas.getContext("2d");
       const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      const MAX_PARTICLES = 42;
+      const PARTICLE_DENSITY_DIVISOR = 28;
+      const POINTER_INFLUENCE = 0.00003;
       let particles = [];
 
       function setCanvasSize() {
@@ -1484,21 +1485,24 @@
         canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${window.innerHeight}px`;
         context.setTransform(ratio, 0, 0, ratio, 0, 0);
-        particles = Array.from({ length: Math.min(42, Math.floor(window.innerWidth / 28)) }, () => ({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          size: Math.random() * 2.2 + 0.6,
-          speedX: (Math.random() - 0.5) * 0.26,
-          speedY: Math.random() * -0.5 - 0.08,
-          alpha: Math.random() * 0.6 + 0.12,
-        }));
+        particles = Array.from(
+          { length: Math.min(MAX_PARTICLES, Math.floor(window.innerWidth / PARTICLE_DENSITY_DIVISOR)) },
+          () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 2.2 + 0.6,
+            speedX: (Math.random() - 0.5) * 0.26,
+            speedY: Math.random() * -0.5 - 0.08,
+            alpha: Math.random() * 0.6 + 0.12,
+          })
+        );
       }
 
       function drawParticles() {
         context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
         particles.forEach((particle) => {
-          particle.x += particle.speedX + (pointer.x - window.innerWidth / 2) * 0.00003;
+          particle.x += particle.speedX + (pointer.x - window.innerWidth / 2) * POINTER_INFLUENCE;
           particle.y += particle.speedY;
 
           if (particle.y < -12) {
