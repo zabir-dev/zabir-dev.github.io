@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抹茶 MATCHA — Ceremonial Grade Japanese Tea</title>
+  <meta name="description" content="Experience the art of Japanese matcha. Ceremonial grade, stone-ground, crafted with centuries of tradition.">
+  <meta name="theme-color" content="#2d4a22">
+
+  <!-- Preload critical assets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader-kanji">抹茶</div>
+      <div class="loader-bar">
+        <div class="loader-bar-fill"></div>
+      </div>
+      <div class="loader-text">Preparing your experience</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo" data-magnetic>
+      <span class="nav-logo-kanji">抹茶</span>
+      <span class="nav-logo-text">MATCHA</span>
+    </a>
+    <div class="nav-links">
+      <a href="#origin" class="nav-link" data-magnetic><span>Origin</span></a>
+      <a href="#ritual" class="nav-link" data-magnetic><span>Ritual</span></a>
+      <a href="#collection" class="nav-link" data-magnetic><span>Collection</span></a>
+      <a href="#philosophy" class="nav-link" data-magnetic><span>Philosophy</span></a>
+    </div>
+    <button class="nav-menu-btn" id="menuBtn" data-magnetic aria-label="Open menu">
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-bg"></div>
+    <div class="mobile-menu-content">
+      <a href="#origin" class="mobile-menu-link"><span data-text="Origin">Origin</span></a>
+      <a href="#ritual" class="mobile-menu-link"><span data-text="Ritual">Ritual</span></a>
+      <a href="#collection" class="mobile-menu-link"><span data-text="Collection">Collection</span></a>
+      <a href="#philosophy" class="mobile-menu-link"><span data-text="Philosophy">Philosophy</span></a>
+    </div>
+  </div>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <main>
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="hero">
+      <div class="hero-bg">
+        <div class="hero-bg-gradient"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="hero-grain"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-line"></span>
+          <span class="hero-eyebrow-text">Ceremonial Grade Japanese Tea</span>
+          <span class="hero-eyebrow-line"></span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="hero-title-line"><span class="hero-title-word" data-parallax-speed="0.15">The</span> <span class="hero-title-word" data-parallax-speed="0.2">Art</span></span>
+          <span class="hero-title-line"><span class="hero-title-word hero-title-italic" data-parallax-speed="0.1">of</span> <span class="hero-title-word hero-title-accent" data-parallax-speed="0.25">Matcha</span></span>
+        </h1>
+
+        <p class="hero-subtitle" data-parallax-speed="0.05">
+          Stone-ground from shade-grown tencha leaves in Uji, Kyoto —<br>
+          a tradition perfected over eight centuries.
+        </p>
+
+        <a href="#origin" class="hero-cta" data-magnetic>
+          <span class="hero-cta-text">Discover the Ritual</span>
+          <span class="hero-cta-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 4L12 20M12 20L6 14M12 20L18 14" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+
+      <div class="hero-scroll-indicator">
+        <div class="hero-scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+
+      <div class="hero-float-kanji" data-parallax-speed="-0.3" aria-hidden="true">茶</div>
+      <div class="hero-float-circle" data-parallax-speed="0.15" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===== MARQUEE ===== -->
+    <section class="marquee-section">
+      <div class="marquee" data-speed="1">
+        <div class="marquee-inner">
+          <span>抹茶</span><span class="marquee-dot">·</span>
+          <span>CEREMONIAL</span><span class="marquee-dot">·</span>
+          <span>宇治</span><span class="marquee-dot">·</span>
+          <span>ORGANIC</span><span class="marquee-dot">·</span>
+          <span>石臼挽き</span><span class="marquee-dot">·</span>
+          <span>STONE-GROUND</span><span class="marquee-dot">·</span>
+          <span>一服</span><span class="marquee-dot">·</span>
+          <span>TRADITION</span><span class="marquee-dot">·</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ORIGIN SECTION ===== -->
+    <section class="origin" id="origin">
+      <div class="origin-parallax-bg" data-parallax-bg>
+        <div class="origin-parallax-layer" data-parallax-speed="-0.2"></div>
+      </div>
+
+      <div class="container">
+        <div class="section-header" data-animate="fade-up">
+          <span class="section-number">01</span>
+          <h2 class="section-title">
+            <span class="section-title-line">From the misty</span>
+            <span class="section-title-line">hills of <em>Uji</em></span>
+          </h2>
+        </div>
+
+        <div class="origin-grid">
+          <div class="origin-image-col" data-animate="fade-up" data-delay="0.2">
+            <div class="origin-image-wrapper">
+              <div class="origin-image" id="originImage1">
+                <div class="origin-image-overlay"></div>
+                <div class="origin-image-inner" style="background: linear-gradient(135deg, #3a5f2c 0%, #5a8a3c 40%, #2d4a22 100%);">
+                  <div class="origin-image-pattern"></div>
+                </div>
+              </div>
+              <div class="origin-image-caption">Uji tea fields, Kyoto Prefecture</div>
+            </div>
+          </div>
+
+          <div class="origin-text-col" data-animate="fade-up" data-delay="0.4">
+            <div class="origin-text">
+              <p class="origin-text-lead">
+                For over 800 years, the finest matcha has been cultivated in the rolling hills of Uji, where morning mist and volcanic soil create perfect growing conditions.
+              </p>
+              <p>
+                Three weeks before harvest, the tea plants are shaded under traditional canopies called <em>tana</em>, forcing the leaves to produce more chlorophyll and L-theanine — the amino acid responsible for matcha's uniquely rich umami flavor and calming energy.
+              </p>
+              <p>
+                Only the youngest, most tender leaves are hand-picked, steamed to preserve their vibrant color, then slowly stone-ground in granite mills — producing just 40 grams per hour of the emerald powder known as matcha.
+              </p>
+            </div>
+
+            <div class="origin-stats">
+              <div class="origin-stat" data-animate="counter" data-target="800">
+                <span class="origin-stat-number">0</span>
+                <span class="origin-stat-suffix">+</span>
+                <span class="origin-stat-label">Years of tradition</span>
+              </div>
+              <div class="origin-stat" data-animate="counter" data-target="40">
+                <span class="origin-stat-number">0</span>
+                <span class="origin-stat-suffix">g/hr</span>
+                <span class="origin-stat-label">Stone-ground pace</span>
+              </div>
+              <div class="origin-stat" data-animate="counter" data-target="137">
+                <span class="origin-stat-number">0</span>
+                <span class="origin-stat-suffix">×</span>
+                <span class="origin-stat-label">More antioxidants</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== HORIZONTAL SCROLL - RITUAL ===== -->
+    <section class="ritual" id="ritual">
+      <div class="ritual-header container" data-animate="fade-up">
+        <span class="section-number">02</span>
+        <h2 class="section-title">
+          <span class="section-title-line">The sacred</span>
+          <span class="section-title-line"><em>ritual</em> of tea</span>
+        </h2>
+      </div>
+
+      <div class="ritual-scroll-wrapper">
+        <div class="ritual-scroll-track" id="ritualTrack">
+          <div class="ritual-card">
+            <div class="ritual-card-number">一</div>
+            <div class="ritual-card-visual">
+              <div class="ritual-card-circle" style="background: linear-gradient(180deg, #d4e4c7 0%, #8fb573 100%);"></div>
+            </div>
+            <h3 class="ritual-card-title">Sift</h3>
+            <p class="ritual-card-text">Pass 2g of matcha through a fine mesh sieve into your chawan (tea bowl) to break up clumps and ensure a silky smooth texture.</p>
+          </div>
+          <div class="ritual-card">
+            <div class="ritual-card-number">二</div>
+            <div class="ritual-card-visual">
+              <div class="ritual-card-circle" style="background: linear-gradient(180deg, #a8d4e6 0%, #5ba3c4 100%);"></div>
+            </div>
+            <h3 class="ritual-card-title">Pour</h3>
+            <p class="ritual-card-text">Add 70ml of water heated to 80°C (176°F). The precise temperature preserves matcha's delicate amino acids and prevents bitterness.</p>
+          </div>
+          <div class="ritual-card">
+            <div class="ritual-card-number">三</div>
+            <div class="ritual-card-visual">
+              <div class="ritual-card-circle" style="background: linear-gradient(180deg, #c7d4b8 0%, #6b9f4a 100%);"></div>
+            </div>
+            <h3 class="ritual-card-title">Whisk</h3>
+            <p class="ritual-card-text">Using a chasen (bamboo whisk), whisk vigorously in a W-motion for 15 seconds until a fine, jade-green froth appears on the surface.</p>
+          </div>
+          <div class="ritual-card">
+            <div class="ritual-card-number">四</div>
+            <div class="ritual-card-visual">
+              <div class="ritual-card-circle" style="background: linear-gradient(180deg, #e8d8c4 0%, #c4a87a 100%);"></div>
+            </div>
+            <h3 class="ritual-card-title">Savor</h3>
+            <p class="ritual-card-text">Hold the chawan with both hands. Take a moment of stillness. Then drink in three slow sips — feeling the warmth, the umami, the calm.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PARALLAX DIVIDER ===== -->
+    <section class="parallax-divider">
+      <div class="parallax-divider-bg">
+        <div class="parallax-divider-layer parallax-divider-layer--1" data-parallax-speed="-0.3"></div>
+        <div class="parallax-divider-layer parallax-divider-layer--2" data-parallax-speed="-0.15"></div>
+        <div class="parallax-divider-layer parallax-divider-layer--3" data-parallax-speed="0.1"></div>
+      </div>
+      <div class="parallax-divider-content" data-animate="fade-up">
+        <blockquote class="parallax-divider-quote">
+          <p>"In the taste of a single cup of tea, you will eventually discover the truth of all ten thousand forms in the universe."</p>
+          <cite>— Attributed to Sen no Rikyū, 16th century tea master</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ===== COLLECTION SECTION ===== -->
+    <section class="collection" id="collection">
+      <div class="container">
+        <div class="section-header" data-animate="fade-up">
+          <span class="section-number">03</span>
+          <h2 class="section-title">
+            <span class="section-title-line">Our curated</span>
+            <span class="section-title-line"><em>collection</em></span>
+          </h2>
+        </div>
+
+        <div class="collection-grid">
+          <article class="product-card" data-animate="fade-up" data-delay="0.1">
+            <div class="product-card-image">
+              <div class="product-card-image-bg" style="background: linear-gradient(160deg, #2d4a22 0%, #5a8a3c 60%, #8fb573 100%);"></div>
+              <div class="product-card-badge">Bestseller</div>
+              <div class="product-card-hover-info">
+                <span>View Details</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-tag">Ceremonial</span>
+              <h3 class="product-card-name">Hikari — 光</h3>
+              <p class="product-card-desc">Our flagship ceremonial grade. Vibrant jade with notes of sweet cream and umami depth.</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">¥4,200</span>
+                <span class="product-card-weight">30g tin</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-animate="fade-up" data-delay="0.25">
+            <div class="product-card-image">
+              <div class="product-card-image-bg" style="background: linear-gradient(160deg, #1a3515 0%, #3a6828 60%, #5a9a3c 100%);"></div>
+              <div class="product-card-badge">Limited</div>
+              <div class="product-card-hover-info">
+                <span>View Details</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-tag">Super Premium</span>
+              <h3 class="product-card-name">Kaze — 風</h3>
+              <p class="product-card-desc">Single-origin first harvest from a 200-year-old tea garden. Extraordinarily smooth.</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">¥8,500</span>
+                <span class="product-card-weight">20g tin</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-animate="fade-up" data-delay="0.4">
+            <div class="product-card-image">
+              <div class="product-card-image-bg" style="background: linear-gradient(160deg, #3a5a2a 0%, #6aaa4a 60%, #a8d48a 100%);"></div>
+              <div class="product-card-hover-info">
+                <span>View Details</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-tag">Everyday</span>
+              <h3 class="product-card-name">Sora — 空</h3>
+              <p class="product-card-desc">Perfect for daily lattes and cooking. Robust flavor with a beautiful emerald hue.</p>
+              <div class="product-card-footer">
+                <span class="product-card-price">¥2,800</span>
+                <span class="product-card-weight">50g tin</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PHILOSOPHY SECTION ===== -->
+    <section class="philosophy" id="philosophy">
+      <div class="philosophy-bg">
+        <div class="philosophy-circle" data-parallax-speed="0.15" aria-hidden="true"></div>
+        <div class="philosophy-circle philosophy-circle--2" data-parallax-speed="-0.1" aria-hidden="true"></div>
+      </div>
+
+      <div class="container">
+        <div class="section-header section-header--center" data-animate="fade-up">
+          <span class="section-number">04</span>
+          <h2 class="section-title section-title--center">
+            <span class="section-title-line">Our</span>
+            <span class="section-title-line"><em>philosophy</em></span>
+          </h2>
+        </div>
+
+        <div class="philosophy-grid">
+          <div class="philosophy-card" data-animate="fade-up" data-delay="0.1">
+            <div class="philosophy-card-icon">
+              <svg viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="0.5"/>
+                <path d="M40 15C40 15 25 30 25 42C25 54 33 60 40 60C47 60 55 54 55 42C55 30 40 15 40 15Z" stroke="currentColor" stroke-width="1" fill="none"/>
+              </svg>
+            </div>
+            <h3 class="philosophy-card-title">Purity</h3>
+            <p class="philosophy-card-text">Single-origin, pesticide-free leaves from certified organic farms. Nothing added, nothing hidden — just pure matcha.</p>
+          </div>
+
+          <div class="philosophy-card" data-animate="fade-up" data-delay="0.25">
+            <div class="philosophy-card-icon">
+              <svg viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="0.5"/>
+                <circle cx="40" cy="40" r="15" stroke="currentColor" stroke-width="1" fill="none"/>
+                <circle cx="40" cy="40" r="5" stroke="currentColor" stroke-width="1" fill="none"/>
+              </svg>
+            </div>
+            <h3 class="philosophy-card-title">Harmony</h3>
+            <p class="philosophy-card-text">We work directly with multi-generational tea farmers, ensuring fair partnerships and preserving centuries of craft knowledge.</p>
+          </div>
+
+          <div class="philosophy-card" data-animate="fade-up" data-delay="0.4">
+            <div class="philosophy-card-icon">
+              <svg viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="0.5"/>
+                <path d="M20 40 L40 20 L60 40 L40 60 Z" stroke="currentColor" stroke-width="1" fill="none"/>
+              </svg>
+            </div>
+            <h3 class="philosophy-card-title">Respect</h3>
+            <p class="philosophy-card-text">Sustainable packaging, carbon-neutral shipping, and a commitment to leaving the earth better than we found it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NEWSLETTER / FOOTER ===== -->
+    <footer class="footer" id="footer">
+      <div class="footer-top">
+        <div class="container">
+          <div class="footer-cta" data-animate="fade-up">
+            <h2 class="footer-cta-title">
+              Begin your<br><em>matcha journey</em>
+            </h2>
+            <p class="footer-cta-text">Join our community for seasonal releases, brewing guides, and exclusive access to limited harvests.</p>
+            <form class="footer-form" id="footerForm">
+              <div class="footer-form-group">
+                <input type="email" class="footer-form-input" placeholder="Your email address" required autocomplete="email">
+                <button type="submit" class="footer-form-btn" data-magnetic>
+                  <span>Subscribe</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="1.5"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="container">
+          <div class="footer-bottom-grid">
+            <div class="footer-brand">
+              <span class="footer-brand-kanji">抹茶</span>
+              <span class="footer-brand-text">MATCHA</span>
+            </div>
+
+            <div class="footer-links">
+              <div class="footer-link-group">
+                <h4>Explore</h4>
+                <a href="#origin">Origin</a>
+                <a href="#ritual">Ritual</a>
+                <a href="#collection">Collection</a>
+                <a href="#philosophy">Philosophy</a>
+              </div>
+              <div class="footer-link-group">
+                <h4>Connect</h4>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Pinterest</a>
+              </div>
+            </div>
+
+            <div class="footer-copy">
+              <p>&copy; 2026 MATCHA. All rights reserved.</p>
+              <p>Crafted with 一期一会 — <em>once in a lifetime</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- GSAP & ScrollTrigger from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
